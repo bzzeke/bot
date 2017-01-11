@@ -1,0 +1,13 @@
+DirectoryIndex index.html index.php
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+Options -MultiViews
+
+RewriteRule (^\.|/\.) - [F]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L,QSA]
+
+</IfModule>
