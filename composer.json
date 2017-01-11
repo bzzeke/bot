@@ -1,0 +1,10 @@
+{
+    "name": "bzzeke/delyanka_bot",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.0",
+        "longman/telegram-bot": "*",
+        "vlucas/phpdotenv": "^2.4",
+        "silex/silex": "~2.0"
+    }
+}
