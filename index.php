@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 $c = require __DIR__ . '/vendor/autoload.php';
 $c->addClassMap(array(
