@@ -25,6 +25,7 @@ class TempCommand extends UserCommand
     protected $usage = '/temp';
     protected $version = '0.1.0';
     protected $mqtt;
+    protected $text = '';
 
     protected $topics = array(
         'Floor 1 Temperature' => null,
@@ -60,7 +61,10 @@ class TempCommand extends UserCommand
         }
 
         echo('done');
-        return true;
+        return Request::sendMessage([
+            'chat_id' => $this->getMessage()->getChat()->getId(),
+            'text' => $this->text,
+        ]);
     }
 
     public function processmsg($topic, $msg)
@@ -81,16 +85,7 @@ class TempCommand extends UserCommand
             $text[] = $t . ': ' . $val;
         }
 
+        $this->text = implode("\n", $text);
         $this->mqtt->close();
-        $this->sendmsg(implode("\n", $text));
     }
-
-    public function sendmsg($msg)
-    {
-        return Request::sendMessage([
-            'chat_id' => $this->getMessage()->getChat()->getId(),
-            'text' => $msg,
-        ]);
-    }
-
 }
