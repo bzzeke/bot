@@ -61,9 +61,16 @@ class TempCommand extends UserCommand
         }
 
         echo('done');
+
+        $keyboard = new Keyboard(
+            array('text' => '/temp')
+        );
+        $keyboard->setResizeKeyboard(true);
+
         return Request::sendMessage([
             'chat_id' => $this->getMessage()->getChat()->getId(),
             'text' => $this->text,
+            'reply_markup' => $keyboard
         ]);
     }
 
