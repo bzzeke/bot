@@ -11,6 +11,8 @@ class ChatStorage {
             $data[$id] = true;
             static::save($data);
         }
+
+        return $id;
     }
 
     static public function get()
