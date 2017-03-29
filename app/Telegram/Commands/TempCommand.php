@@ -11,6 +11,7 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Request;
+use Bot\Mqtt;
 
 /**
  * User "/forcereply" command
@@ -42,7 +43,7 @@ class TempCommand extends UserCommand
      */
     public function execute()
     {
-        $this->mqtt = new \phpMQTT(getenv('MQTT_HOST'), 1883, "WB Delyanka");
+        $this->mqtt = new Mqtt(getenv('MQTT_HOST'), 1883, "WB Delyanka");
 
         if(!$this->mqtt->connect()){
             echo('Failed to connecto to MQTT');
@@ -62,9 +63,7 @@ class TempCommand extends UserCommand
 
         echo('done');
 
-        $keyboard = new Keyboard(
-            array('text' => '/temp')
-        );
+        $keyboard = new Keyboard($this->config['keyboards']);
         $keyboard->setResizeKeyboard(true);
 
         return Request::sendMessage([

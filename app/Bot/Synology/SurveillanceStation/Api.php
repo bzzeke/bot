@@ -1,6 +1,9 @@
 <?php
 
-class Synology_SurveillanceStation_Api extends Synology_Api_Authenticate
+namespace Bot\Synology\SurveillanceStation;
+use Synology\Api\Authenticate;
+
+class Api extends Authenticate
 {
 
     const API_SERVICE_NAME = 'SurveillanceStation';
@@ -21,8 +24,8 @@ class Synology_SurveillanceStation_Api extends Synology_Api_Authenticate
         parent::__construct(self::API_SERVICE_NAME, self::API_NAMESPACE, $address, $port, $protocol, $version, $verifySSL);
     }
 
-    public function getSnapshot()
+    public function getSnapshot($cameraId)
     {
-        return $this->_request('Camera', 'entry.cgi', 'GetSnapshot', array('cameraId' => 1));
+        return $this->_request('Camera', 'entry.cgi', 'GetSnapshot', array('cameraId' => $cameraId));
     }
 }

@@ -1,18 +1,32 @@
 <?php
+error_reporting(E_ALL);
 $c = require __DIR__ . '/vendor/autoload.php';
-$c->addClassMap(array(
-  'phpMQTT' => __DIR__ . '/app/phpMQTT.php',
-  'Synology_SurveillanceStation_Api' => __DIR__ . '/app/Synology/SurveillanceStation/Api.php'
-));
+$c->add('Bot', __DIR__ . '/app');
 
 $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
-$commands_path = __DIR__ . '/app/Commands/';
+$commands_path = __DIR__ . '/app/Telegram/Commands';
 $app = new Silex\Application();
 
 $telegram = new Longman\TelegramBot\Telegram(getenv('API_KEY'), getenv('BOT_NAME'));
 $telegram->addCommandsPath($commands_path);
 
+$config = [
+    'keyboards' => [
+        ['text' => '/temp'],
+        ['text' => '/cams'],
+    ]
+];
+
+$telegram->setCommandConfig('temp', $config);
+$telegram->setCommandConfig('cams', $config);
+
+
+include('./app/Telegram/Commands/CamsCommand.php');
+$o = new Longman\TelegramBot\Commands\UserCommands\CamsCommand($telegram);
+$o->execute();
+
+die;
 $app->match('/hook/register', function () use ($app, $telegram) {
     try {
             $result = $telegram->setWebhook(getenv('HOOK_URL'));

@@ -11,6 +11,7 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Request;
+use Bot\Synology\SurveillanceStation\Api;
 
 /**
  * User "/forcereply" command
@@ -32,14 +33,8 @@ class CamsCommand extends UserCommand
      */
     public function execute()
     {
-        $keyboard = new Keyboard(
-            array('text' => '/cams')
-        );
+        $keyboard = new Keyboard($this->config['keyboards']);
         $keyboard->setResizeKeyboard(true);
-
-        return Request::sendMessage([
-
-        ]);
 
         foreach ($this->getSnapshots() as $cam_id => $file) {
             Request::sendPhoto([
@@ -54,12 +49,12 @@ class CamsCommand extends UserCommand
     {
         $cam_ids = [1,2];
         $files = [];
-        $synology = new \Synology_SurveillanceStation_Api(getenv('SYNOLOGY_HOST'), 5000, 'http', 1);
+        $synology = new Api(getenv('SYNOLOGY_HOST'), 5000, 'http', 1);
         $synology->connect(getenv('SYNOLOGY_USER'), getenv('SYNOLOGY_PASSWORD'));
 
         foreach ($cam_ids as $cam_id) {
             $files[$cam_id] = tempnam('/tmp', 'cam_' . $cam_id);
-            file_put_contents($files[$cam_id], $synology->getSnapshot());
+            file_put_contents($files[$cam_id], $synology->getSnapshot($cam_id));
         }
 
         return $files;
