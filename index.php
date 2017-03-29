@@ -1,7 +1,8 @@
 <?php
 $c = require __DIR__ . '/vendor/autoload.php';
 $c->addClassMap(array(
-  'phpMQTT' => __DIR__ . '/app/phpMQTT.php'
+  'phpMQTT' => __DIR__ . '/app/phpMQTT.php',
+  'Synology_SurveillanceStation_Api' => __DIR__ . '/app/Synology/SurveillanceStation/Api.php'
 ));
 
 $dotenv = new Dotenv\Dotenv(__DIR__);
