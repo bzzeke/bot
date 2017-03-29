@@ -21,12 +21,6 @@ $config = [
 $telegram->setCommandConfig('temp', $config);
 $telegram->setCommandConfig('cams', $config);
 
-
-include('./app/Telegram/Commands/CamsCommand.php');
-$o = new Longman\TelegramBot\Commands\UserCommands\CamsCommand($telegram);
-$o->execute();
-
-die;
 $app->match('/hook/register', function () use ($app, $telegram) {
     try {
             $result = $telegram->setWebhook(getenv('HOOK_URL'));
