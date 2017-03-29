@@ -12,6 +12,7 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Request;
 use Bot\Mqtt;
+use Bot\ChatStorage;
 
 /**
  * User "/forcereply" command
@@ -67,7 +68,7 @@ class TempCommand extends UserCommand
         $keyboard->setResizeKeyboard(true);
 
         return Request::sendMessage([
-            'chat_id' => $this->getMessage()->getChat()->getId(),
+            'chat_id' => ChatStorage::set($this->getMessage()->getChat()->getId()),
             'text' => $this->text,
             'reply_markup' => $keyboard
         ]);

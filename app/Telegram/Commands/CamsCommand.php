@@ -12,6 +12,7 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Request;
 use Bot\Synology\SurveillanceStation\Api;
+use Bot\ChatStorage;
 
 /**
  * User "/forcereply" command
@@ -38,7 +39,7 @@ class CamsCommand extends UserCommand
 
         foreach ($this->getSnapshots() as $cam_id => $file) {
             Request::sendPhoto([
-                'chat_id' => $this->getMessage()->getChat()->getId(),
+                'chat_id' => ChatStorage::set($this->getMessage()->getChat()->getId()),
                 'caption' => 'Cam #' . $cam_id,
                 'reply_markup' => $keyboard
             ], $file);
