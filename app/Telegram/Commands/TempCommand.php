@@ -35,7 +35,8 @@ class TempCommand extends UserCommand
         'Basement Temperature' => null,
         'Garret Temperature' => null,
         'Outside Temperature' => null,
-        'Boiler Out Temperature' => null
+        'Boiler Out Temperature' => null,
+        'Bath House Temperature' => null
     );
 
     /**#@-*/
