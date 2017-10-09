@@ -30,14 +30,33 @@ class TempCommand extends UserCommand
     protected $text = '';
 
     protected $topics = array(
+        'Floor_1' => null,
+        'Floor_2' => null,
+        'Basement' => null,
         'Floor 1 Temperature' => null,
         'Floor 2 Temperature' => null,
         'Basement Temperature' => null,
         'Garret Temperature' => null,
         'Outside Temperature' => null,
         'Boiler Out Temperature' => null,
-        'Bath House Temperature' => null
+        'Bath House Temperature' => null,
+        'Simple' => null,
+        'K8' => null,
+        'K1' => null,
+        'K2' => null,
+        'K3' => null,
     );
+
+    protected $formatted_msg = <<<EOT
+Floor 1: [Floor 1 Temperature] ([Floor_1] -> [K2])
+Floor 2: [Floor 2 Temperature] ([Floor_2] -> [K1])
+Basement: [Basement Temperature] ([Basement] -> [K3])
+Boiler: [Boiler Out Temperature] ([K8])
+Simple mode: [Simple]
+Garret: [Garret Temperature]
+Outside: [Outside Temperature]
+Bath house: [Bath House Temperature]
+EOT;
 
     /**#@-*/
     /**
@@ -56,7 +75,11 @@ class TempCommand extends UserCommand
             '/devices/thermostat/#' => array(
                 'qos' => 0,
                 'function' => array($this, 'processmsg')
-            )
+            ),
+            '/devices/wb-mr14_32/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
         );
 
         $this->mqtt->subscribe($topics, 0);
@@ -89,11 +112,12 @@ class TempCommand extends UserCommand
             if (is_null($val)) {
                 return;
             }
-
-            $text[] = $t . ': ' . $val;
         }
 
-        $this->text = implode("\n", $text);
+        $this->text = strtr($this->formatted_msg, array_combine(array_map(function($v) {
+            return '[' . $v . ']';
+        }, array_keys($this->topics)), $this->topics));
+
         $this->mqtt->close();
     }
 }
