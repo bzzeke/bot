@@ -45,18 +45,37 @@ class TempCommand extends UserCommand
         'K1' => null,
         'K2' => null,
         'K3' => null,
+        'Water heater' => null,
+        'Work time' => null,
+        'Pressure' => null
     );
 
     protected $formatted_msg = <<<EOT
-Floor 1: [Floor 1 Temperature] ([Floor_1] -> [K2])
-Floor 2: [Floor 2 Temperature] ([Floor_2] -> [K1])
-Basement: [Basement Temperature] ([Basement] -> [K3])
-Boiler: [Boiler Out Temperature] ([K8])
-Simple mode: [Simple]
-Garret: [Garret Temperature]
-Outside: [Outside Temperature]
-Bath house: [Bath House Temperature]
+Floor 1: *[K2]*, [Floor 1 Temperature]˚C → [Floor_1]˚C
+Floor 2: *[K1]*, [Floor 2 Temperature]˚C → [Floor_2]˚C
+Basement: *[K3]*, [Basement Temperature]˚C → [Basement]˚C
+Boiler: *[K8]*, [Boiler Out Temperature]˚C
+Simple mode: *[Simple]*
+Pressure: [Pressure] bar
+Boiler work time: [Work time]
+
+Garret: [Garret Temperature]˚C
+Outside: [Outside Temperature]˚C
+Bath house: [Bath House Temperature]˚C
+
+Water heater: *[Water heater]*
+
 EOT;
+
+    protected $placeholder_types = [
+        'K1' => 'bool',
+        'K2' => 'bool',
+        'K3' => 'bool',
+        'K8' => 'bool',
+        'Simple' => 'bool',
+        'Water heater' => 'bool',
+        'Work time' => 'hours'
+    ];
 
     /**#@-*/
     /**
@@ -94,6 +113,7 @@ EOT;
         return Request::sendMessage([
             'chat_id' => ChatStorage::set($this->getMessage()->getChat()->getId()),
             'text' => $this->text,
+            'parse_mode' => 'Markdown',
             'reply_markup' => $keyboard
         ]);
     }
@@ -105,6 +125,18 @@ EOT;
 
         if (array_key_exists($topic, $this->topics)) {
             $this->topics[$topic] = $msg;
+
+            if (isset($this->placeholder_types[$topic])) {
+                switch ($this->placeholder_types[$topic]) {
+                    case 'bool':
+                        $this->topics[$topic] = (int)$msg == 0 ? 'off' : 'on';
+                    break;
+
+                    case 'hours':
+                        $this->topics[$topic] = (int)$msg > 0 ? sprintf('%.1f hr', $msg / 60 / 60) : 'n/a';
+                    break;
+                }
+            }
         }
 
         $text = array();
