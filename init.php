@@ -10,14 +10,16 @@ $commands_path = __DIR__ . '/app/Telegram/Commands';
 $app = new Silex\Application();
 
 $telegram = new Longman\TelegramBot\Telegram(getenv('API_KEY'), getenv('BOT_NAME'));
-$telegram->addCommandsPath($commands_path);
+$telegram->addCommandsPath($commands_path, true);
 
 $config = [
     'keyboards' => [
         ['text' => '/temp'],
         ['text' => '/cams'],
+        ['text' => '/set'],
     ]
 ];
 
 $telegram->setCommandConfig('temp', $config);
 $telegram->setCommandConfig('cams', $config);
+$telegram->setCommandConfig('set', $config);

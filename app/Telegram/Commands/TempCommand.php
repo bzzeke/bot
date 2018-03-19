@@ -47,7 +47,8 @@ class TempCommand extends UserCommand
         'K3' => null,
         'Water heater' => null,
         'Work time' => null,
-        'Pressure' => null
+        'Pressure' => null,
+        'Enabled' => null
     );
 
     protected $formatted_msg = <<<EOT
@@ -56,6 +57,7 @@ Floor 2: *[K1]*, [Floor 2 Temperature]˚C → [Floor_2]˚C
 Basement: *[K3]*, [Basement Temperature]˚C → [Basement]˚C
 Boiler: *[K8]*, [Boiler Out Temperature]˚C
 Simple mode: *[Simple]*
+Enabled: *[Enabled]*
 Pressure: [Pressure] bar
 Boiler work time: [Work time]
 
@@ -73,6 +75,7 @@ EOT;
         'K3' => 'bool',
         'K8' => 'bool',
         'Simple' => 'bool',
+        'Enabled' => 'bool',
         'Water heater' => 'bool',
         'Work time' => 'hours'
     ];
