@@ -145,7 +145,7 @@ class SetCommand extends UserCommand
         return $result;
     }
 
-    protected function publishTopic($floor, $temperature)
+    protected function publishTopic($topic, $payload)
     {
         $this->mqtt = new Mqtt(getenv('MQTT_HOST'), 1883, "WB Delyanka");
 
@@ -154,7 +154,7 @@ class SetCommand extends UserCommand
             return false;
         }
 
-        $this->mqtt->publish('/devices/thermostat/controls/' . $floor . '/on', $temperature);
+        $this->mqtt->publish('/devices/thermostat/controls/' . $topic . '/on', $payload);
     }
 
     protected function generateCallback($payload)
