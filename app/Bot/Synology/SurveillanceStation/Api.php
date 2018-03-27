@@ -28,4 +28,9 @@ class Api extends Authenticate
     {
         return $this->_request('Camera', 'entry.cgi', 'GetSnapshot', array('cameraId' => $cameraId));
     }
+
+    public function setPosition($cameraId, $presetId)
+    {
+        return $this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId));
+    }
 }
