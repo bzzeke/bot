@@ -7,6 +7,6 @@
         "vlucas/phpdotenv": "^2.4",
         "silex/silex": "~2.0",
         "qsomazzi/synology": "dev-master",
-        "ddeboer/imap": "^0.5.2"
+        "bashkarev/email": "^1.0"
     }
 }
