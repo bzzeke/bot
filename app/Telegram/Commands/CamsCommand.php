@@ -41,8 +41,9 @@ class CamsCommand extends UserCommand
             Request::sendPhoto([
                 'chat_id' => ChatStorage::set($this->getMessage()->getChat()->getId()),
                 'caption' => 'Cam #' . $cam_id,
-                'reply_markup' => $keyboard
-            ], $file);
+                'reply_markup' => $keyboard,
+                'photo' => Request::encodeFile($file)
+            ]);
         }
     }
 

@@ -3,9 +3,9 @@
     "type": "project",
     "require": {
         "php": ">=5.5.0",
-        "longman/telegram-bot": "*",
+        "longman/telegram-bot": "^0.52",
         "vlucas/phpdotenv": "^2.4",
-        "silex/silex": "~2.0",
+        "silex/silex": "^2.0",
         "qsomazzi/synology": "dev-master",
         "bashkarev/email": "^1.0"
     }
