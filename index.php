@@ -40,32 +40,44 @@ $app->match('/hook/process', function () use ($app, $telegram) {
 
 $app->match('/email_received', function () use ($app, $telegram) {
 
-    $message = Parser::email(file_get_contents('php://input'));
+    $email = file_get_contents('php://input');
+    $message = Parser::email($email);
     $chat_ids = ChatStorage::get();
 
-    $i = 0;
     $text = $message->textPlain();
+    if (empty($text)) {
+        $text = strip_tags($message->textHtml());
+    }
+
     $attachments = $message->getAttachments();
 
     if (!empty($attachments)) {
         foreach ($attachments as $attachment) {
-            $file = tempnam('/tmp/', 'att_' . $i);
+            $file = tempnam('/tmp/', 'att');
             $attachment->save($file);
 
             foreach ($chat_ids as $chat_id => $_data) {
-                Request::sendPhoto([
+                $response = Request::sendPhoto([
                     'chat_id' => $chat_id,
                     'caption' => $text,
                     'photo' => Request::encodeFile($file)
                 ]);
+
+                if (!$response->isOk()) {
+                    save_failed_email($response, $message, $email);
+                }
             }
         }
     } else {
         foreach ($chat_ids as $chat_id => $_data) {
-            Request::sendMessage([
+            $response = Request::sendMessage([
                 'chat_id' => $chat_id,
                 'text' => $text
             ]);
+
+            if (!$response->isOk()) {
+                save_failed_email($response, $message, $email);
+            }
         }
     }
 
@@ -74,3 +86,18 @@ $app->match('/email_received', function () use ($app, $telegram) {
 
 
 $app->run();
+
+function save_failed_email($response, $message, $contents)
+{
+    $date = $message->getDate();
+    $filename = './var/failed_email_' . $date->getTimestamp();
+    file_put_contents($filename, $contents);
+
+    $chat_ids = ChatStorage::get();
+    foreach ($chat_ids as $chat_id => $_data) {
+        Request::sendMessage([
+            'chat_id' => $chat_id,
+            'text' => sprintf("Failed to deliver email.\n%s\nemail stored at %s", $response->printError(true), $filename)
+        ]);
+    }
+}
