@@ -1,42 +1,35 @@
 <?php
 
-use Symfony\Component\Debug\ErrorHandler;
-use Symfony\Component\Debug\Debug;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-error_reporting(E_ALL);
-ini_set('display_errors','On');
-
+use Bot\Providers\BootServiceProvider;
+use Bot\Providers\SynologyServiceProvider;
+use Bot\Providers\TelegramServiceProvider;
 
 define('APP_DIR', __DIR__);
-$c = require __DIR__ . '/vendor/autoload.php';
-$c->add('Bot', __DIR__ . '/app');
 
-$dotenv = new Dotenv\Dotenv(__DIR__);
-$dotenv->load();
-$commands_path = __DIR__ . '/app/Telegram/Commands';
-$app = new Silex\Application();
+$composer = require(APP_DIR . '/vendor/autoload.php');
+$composer->add('Bot', APP_DIR . '/app');
 
-// Enable debug mode
-$app['debug'] = true;
+$app = new Application();
 
-// Handle fatal errors
-ErrorHandler::register();
+$app->register(new BootServiceProvider);
+$app->register(new SynologyServiceProvider);
+$app->register(new TelegramServiceProvider);
 
-Debug::enable();
+$app->match('/{controller}/{action}', function (Application $app, Request $request, string $controller, string $action) {
+    $class = 'Bot\\Controllers\\' . str_replace('_', '', ucwords($controller, '_'));
 
-$telegram = new Longman\TelegramBot\Telegram(getenv('API_KEY'), getenv('BOT_NAME'));
-$telegram->addCommandsPath($commands_path, true);
+    if (class_exists($class)) {
+        $handler = new $class($app, $request);
+        return $handler->handle($action);
+    }
 
-$config = [
-    'keyboards' => [
-        ['text' => '/temp'],
-        ['text' => '/cams'],
-        ['text' => '/set'],
-        ['text' => '/video'],
-    ]
-];
+    return new Response('Controller not found', 404);
+})
+    ->assert('controller', '\w+')
+    ->assert('action', '\w+');
 
-$telegram->setCommandConfig('temp', $config);
-$telegram->setCommandConfig('cams', $config);
-$telegram->setCommandConfig('set', $config);
-$telegram->setCommandConfig('video', $config);
+return $app;
