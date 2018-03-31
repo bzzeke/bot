@@ -33,4 +33,14 @@ class Api extends Authenticate
     {
         return $this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId));
     }
+
+    public function getRecordings($cameraId, $limit)
+    {
+        return $this->_request('Recording', 'entry.cgi', 'List', array('cameraIds' => $cameraId, 'limit' => $limit));
+    }
+
+    public function getRecording($id)
+    {
+        return $this->_request('Recording', 'entry.cgi', 'Download', array('id' => $id));
+    }
 }
