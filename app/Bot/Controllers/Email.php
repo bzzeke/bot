@@ -12,6 +12,8 @@ class Email extends Controller
 {
     public function process()
     {
+        $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
+
         $email = file_get_contents('php://input');
         $message = Parser::email($email);
         $chat_ids = ChatStorage::get();
