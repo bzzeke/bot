@@ -14,7 +14,6 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
 use Bot\ChatStorage;
 use Bot\Conversation;
-use Bot\Synology\SurveillanceStation\Api;
 
 /**
  * User "/forcereply" command
@@ -113,8 +112,7 @@ class CamsCommand extends UserCommand
     protected function getSnapshots($cam_ids, $preset_id = 0)
     {
         $files = [];
-        $synology = new Api(getenv('SYNOLOGY_HOST'), 5000, 'http', 1);
-        $synology->connect(getenv('SYNOLOGY_USER'), getenv('SYNOLOGY_PASSWORD'));
+        $synology = $this->config['synology'];
 
         foreach ($cam_ids as $cam_id) {
             if (!empty($preset_id)) {

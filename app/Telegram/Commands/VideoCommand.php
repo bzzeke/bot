@@ -14,7 +14,6 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
 use Bot\ChatStorage;
 use Bot\Conversation;
-use Bot\Synology\SurveillanceStation\Api;
 
 /**
  * User "/forcereply" command
@@ -110,8 +109,7 @@ class VideoCommand extends UserCommand
 
     protected function getList($cam_id)
     {
-        $synology = new Api(getenv('SYNOLOGY_HOST'), 5000, 'http', 6);
-        $synology->connect(getenv('SYNOLOGY_USER'), getenv('SYNOLOGY_PASSWORD'));
+        $synology = $this->config['synology'];
 
         $list = $synology->getRecordings($cam_id, static::LIST_LIMIT);
         $list = json_decode($list, true);
@@ -132,8 +130,7 @@ class VideoCommand extends UserCommand
 
     protected function getVideo($id)
     {
-        $synology = new Api(getenv('SYNOLOGY_HOST'), 5000, 'http', 6);
-        $synology->connect(getenv('SYNOLOGY_USER'), getenv('SYNOLOGY_PASSWORD'));
+        $synology = $this->config['synology'];
 
         $file = tempnam('/tmp', 'cam_' . $id);
         file_put_contents($file, $synology->getRecording($id));

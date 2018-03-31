@@ -34,7 +34,8 @@ class TelegramServiceProvider implements ServiceProviderInterface
 
         $app['telegram.config'] = function ($app) {
             $config = [
-              'keyboards' => []
+              'keyboards' => [],
+              'synology' => $app['synology']
             ];
 
             foreach ($app['telegram.commands'] as $command) {

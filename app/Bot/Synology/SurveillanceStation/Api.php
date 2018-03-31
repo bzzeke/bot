@@ -7,8 +7,30 @@ class Api extends Authenticate
 {
 
     const API_SERVICE_NAME = 'SurveillanceStation';
-
     const API_NAMESPACE = 'SYNO';
+
+    protected $user;
+    protected $password;
+    protected $isConnected = false;
+
+    protected function _request($api, $path, $method, $params = [], $version = null, $httpMethod = 'get')
+    {
+        if (!$this->isConnected()) {
+            $this->connect($this->user, $this->password);
+        }
+
+        return parent::_request($api, $path, $method, $params, $version, $httpMethod);
+    }
+
+    protected function isConnected()
+    {
+        return $this->isConnected;
+    }
+
+    protected function setConnected()
+    {
+        $this->isConnected = true;
+    }
 
     /**
      * Info API setup
@@ -42,5 +64,11 @@ class Api extends Authenticate
     public function getRecording($id)
     {
         return $this->_request('Recording', 'entry.cgi', 'Download', array('id' => $id));
+    }
+
+    public function setAuth($user, $password)
+    {
+        $this->user = $user;
+        $this->password = $password;
     }
 }
