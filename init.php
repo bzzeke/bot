@@ -32,4 +32,6 @@ $app->match('/{controller}/{action}', function (Application $app, Request $reque
     ->assert('controller', '\w+')
     ->assert('action', '\w+');
 
+$app['debug'] = true;
+
 return $app;

@@ -6,8 +6,6 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
 use Silex\Api\BootableProviderInterface;
-
-use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\Debug;
 
 use Dotenv\Dotenv;
@@ -25,22 +23,10 @@ class BootServiceProvider implements ServiceProviderInterface, BootableProviderI
     {
         $app['dotenv']->load();
 
-        if (getenv('DEBUG')) {
-            $this->enableDebug($app);
-        }
-    }
-
-    protected function enableDebug(Application $app)
-    {
         error_reporting(E_ALL);
-        ini_set('display_errors', 'On');
 
-        $app['debug'] = true;
-        $app->error(function(\Exception $e) use ($app) {
-            print_r($e); // Do something with $e
-        });
-
-        ErrorHandler::register();
-        Debug::enable();
+        if (getenv('DEBUG')) {
+            Debug::enable();
+        }
     }
 }
