@@ -44,7 +44,6 @@ class GenericmessageCommand extends SystemCommand
      * Command execute method
      *
      * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
      */
     public function execute()
     {

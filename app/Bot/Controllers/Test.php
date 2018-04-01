@@ -3,7 +3,6 @@
 namespace Bot\Controllers;
 
 use Longman\TelegramBot\Entities\Update;
-use Longman\TelegramBot\Exception\TelegramException;
 
 class Test extends Controller
 {

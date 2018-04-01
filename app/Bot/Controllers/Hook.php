@@ -15,6 +15,7 @@ class Hook extends Controller
                 return $result->getDescription();
             }
         } catch (TelegramException $e) {
+            error_log($e->getMessage());
             return $e;
         }
     }
@@ -28,6 +29,7 @@ class Hook extends Controller
                 return $result->getDescription();
             }
         }  catch (TelegramException $e) {
+            error_log($e->getMessage());
             return $e;
         }
     }
@@ -37,6 +39,7 @@ class Hook extends Controller
         try {
             $this->app['telegram']->handle();
         } catch (TelegramException $e) {
+            error_log($e->getMessage());
             return $e;
         }
         return 'ok';

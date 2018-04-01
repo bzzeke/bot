@@ -51,7 +51,6 @@ class Conversation
      * @param int    $chat_id
      * @param string $command
      *
-     * @throws \Longman\TelegramBot\Exception\TelegramException
      */
     public function __construct($user_id, $chat_id, $command = null, $reset = false)
     {
@@ -67,7 +66,6 @@ class Conversation
      * Load the conversation from the database
      *
      * @return bool
-     * @throws \Longman\TelegramBot\Exception\TelegramException
      */
     protected function load()
     {
@@ -108,7 +106,6 @@ class Conversation
      * Start a new conversation if the current command doesn't have one yet
      *
      * @return bool
-     * @throws \Longman\TelegramBot\Exception\TelegramException
      */
     protected function start()
     {

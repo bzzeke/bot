@@ -6,7 +6,6 @@ use bashkarev\email\Parser;
 use Bot\ChatStorage;
 
 use Longman\TelegramBot\Request;
-use Longman\TelegramBot\Exception\TelegramException;
 
 class Email extends Controller
 {
@@ -65,10 +64,13 @@ class Email extends Controller
         file_put_contents($filename, $contents);
 
         $chat_ids = ChatStorage::get();
+        $message = sprintf("Failed to deliver email.\n%s\nemail stored at %s", $response->printError(true), $filename);
+
+        error_log($message);
         foreach ($chat_ids as $chat_id => $_data) {
             Request::sendMessage([
                 'chat_id' => $chat_id,
-                'text' => sprintf("Failed to deliver email.\n%s\nemail stored at %s", $response->printError(true), $filename)
+                'text' => $message
             ]);
         }
     }
