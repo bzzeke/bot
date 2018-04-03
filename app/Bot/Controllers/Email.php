@@ -19,7 +19,7 @@ class Email extends Controller
 
         $text = $message->textPlain();
         if (empty($text)) {
-            $text = strip_tags($message->textHtml());
+            $text = strip_tags($this->convertMarkup($message->textHtml()));
         }
 
         $attachments = $message->getAttachments();
@@ -73,6 +73,11 @@ class Email extends Controller
                 'text' => $message
             ]);
         }
+    }
+
+    protected function convertMarkup($text)
+    {
+        return preg_replace('/\<br(\s*)?\/?\>/i', PHP_EOL, $text);
     }
 
 }
