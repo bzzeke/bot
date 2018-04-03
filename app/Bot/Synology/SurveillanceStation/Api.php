@@ -54,12 +54,12 @@ class Api extends Authenticate
     public function setPosition($cameraId, $presetId)
     {
         $version = 3;
-        return $this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId), $version);
+        return $this->checkResponse($this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId), $version));
     }
 
     public function getRecordings($cameraId, $limit)
     {
-        return $this->_request('Recording', 'entry.cgi', 'List', array('cameraIds' => $cameraId, 'limit' => $limit));
+        return $this->checkResponse($this->_request('Recording', 'entry.cgi', 'List', array('cameraIds' => $cameraId, 'limit' => $limit)));
     }
 
     public function getRecording($id)
@@ -71,5 +71,15 @@ class Api extends Authenticate
     {
         $this->user = $user;
         $this->password = $password;
+    }
+
+    protected function checkResponse($response)
+    {
+        $result = json_decode($response, true);
+        if (empty($result['success'])) {
+            error_log($response);
+        }
+
+        return $result;
     }
 }

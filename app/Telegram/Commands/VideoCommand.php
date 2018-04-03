@@ -110,9 +110,7 @@ class VideoCommand extends UserCommand
     protected function getList($cam_id)
     {
         $synology = $this->config['synology'];
-
         $list = $synology->getRecordings($cam_id, static::LIST_LIMIT);
-        $list = json_decode($list, true);
 
         $recordings = [];
         if (!empty($list['data'])) {
