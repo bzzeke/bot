@@ -15,7 +15,15 @@ class SynologyServiceProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app['synology'] = function ($app) {
-            $synology = new Api(getenv('SYNOLOGY_HOST'), static::API_PORT, 'http', static::API_VERSION);
+
+            if (strpos(getenv('SYNOLOGY_HOST'), ':') !== false) {
+                list($host, $port) = explode(':', getenv('SYNOLOGY_HOST'));
+            } else {
+                $host = getenv('SYNOLOGY_HOST');
+                $port = static::API_PORT;
+            }
+
+            $synology = new Api($host, $port, 'http', static::API_VERSION);
             $synology->setAuth(getenv('SYNOLOGY_USER'), getenv('SYNOLOGY_PASSWORD'));
 
             return $synology;

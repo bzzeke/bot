@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Bot\Providers\BootServiceProvider;
 use Bot\Providers\SynologyServiceProvider;
+use Bot\Providers\MqttServiceProvider;
 use Bot\Providers\TelegramServiceProvider;
 
 define('APP_DIR', __DIR__);
@@ -17,6 +18,7 @@ $app = new Application();
 
 $app->register(new BootServiceProvider);
 $app->register(new SynologyServiceProvider);
+$app->register(new MqttServiceProvider);
 $app->register(new TelegramServiceProvider);
 
 $app->match('/{controller}/{action}', function (Application $app, Request $request, string $controller, string $action) {

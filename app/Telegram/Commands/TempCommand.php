@@ -11,7 +11,6 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Request;
-use Bot\Mqtt;
 use Bot\ChatStorage;
 
 /**
@@ -26,7 +25,6 @@ class TempCommand extends UserCommand
     protected $description = 'Get temperature';
     protected $usage = '/temp';
     protected $version = '0.1.0';
-    protected $mqtt;
     protected $text = '';
 
     protected $topics = array(
@@ -86,10 +84,8 @@ EOT;
      */
     public function execute()
     {
-        $this->mqtt = new Mqtt(getenv('MQTT_HOST'), 1883, "WB Delyanka");
-
-        if(!$this->mqtt->connect()){
-            echo('Failed to connecto to MQTT');
+        if(!$this->config['mqtt']->connect()){
+            error_log('Failed to connecto to MQTT (temp)');
             return false;
         }
 
@@ -104,11 +100,9 @@ EOT;
             ),
         );
 
-        $this->mqtt->subscribe($topics, 0);
-        while ($this->mqtt->proc()) {
+        $this->config['mqtt']->subscribe($topics, 0);
+        while ($this->config['mqtt']->proc()) {
         }
-
-        echo('done');
 
         $keyboard = new Keyboard($this->config['keyboards']);
         $keyboard->setResizeKeyboard(true);
@@ -153,6 +147,6 @@ EOT;
             return '[' . $v . ']';
         }, array_keys($this->topics)), $this->topics));
 
-        $this->mqtt->close();
+        $this->config['mqtt']->close();
     }
 }

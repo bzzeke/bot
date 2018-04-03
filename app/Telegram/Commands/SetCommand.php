@@ -13,7 +13,6 @@ use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Request;
-use Bot\Mqtt;
 use Bot\Conversation;
 
 /**
@@ -147,14 +146,12 @@ class SetCommand extends UserCommand
 
     protected function publishTopic($topic, $payload)
     {
-        $this->mqtt = new Mqtt(getenv('MQTT_HOST'), 1883, "WB Delyanka");
-
-        if(!$this->mqtt->connect()){
-            error_log('Failed to connecto to MQTT');
+        if(!$this->config['mqtt']->connect()){
+            error_log('Failed to connecto to MQTT (set)');
             return false;
         }
 
-        $this->mqtt->publish('/devices/thermostat/controls/' . $topic . '/on', $payload);
+        $this->config['mqtt']->publish('/devices/thermostat/controls/' . $topic . '/on', $payload);
     }
 
     protected function generateCallback($payload)
