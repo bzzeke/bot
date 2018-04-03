@@ -5,7 +5,7 @@ namespace Bot\Providers;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Longman\TelegramBot\Telegram;
+use Bot\Telegram;
 
 class TelegramServiceProvider implements ServiceProviderInterface
 {
@@ -18,6 +18,11 @@ class TelegramServiceProvider implements ServiceProviderInterface
 
             foreach ($app['telegram.commands'] as $command) {
                 $telegram->setCommandConfig($command, $app['telegram.config']);
+            }
+
+            $admins_list = explode(',', getenv('TELEGRAM_ADMINS_LIST'));
+            if (!empty($admins_list)) {
+                $telegram->enableAdmins($admins_list);
             }
 
             return $telegram;
