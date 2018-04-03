@@ -20,7 +20,10 @@ class TelegramServiceProvider implements ServiceProviderInterface
                 $telegram->setCommandConfig($command, $app['telegram.config']);
             }
 
-            $admins_list = explode(',', getenv('TELEGRAM_ADMINS_LIST'));
+            $admins_list = array_map(function($value) {
+                return (int) $value;
+            }, explode(',', getenv('TELEGRAM_ADMINS_LIST')));
+
             if (!empty($admins_list)) {
                 $telegram->enableAdmins($admins_list);
             }

@@ -1,14 +1,16 @@
 <?php
 
-namespace Bot\Telegram;
+namespace Bot;
 
-class Telegram extends Longman\TelegramBot\Telegram
+use Longman\TelegramBot\Entities\Update;
+
+class Telegram extends \Longman\TelegramBot\Telegram
 {
     public function processUpdate(Update $update)
     {
         $this->update = $update;
 
-        if ($this->isAdmin()) {
+        if (!$this->getAdminList() || $this->isAdmin()) {
             return parent::processUpdate($update);
         }
     }
