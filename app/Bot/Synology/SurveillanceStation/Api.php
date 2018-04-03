@@ -53,7 +53,8 @@ class Api extends Authenticate
 
     public function setPosition($cameraId, $presetId)
     {
-        return $this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId));
+        $version = 3;
+        return $this->_request('PTZ', 'entry.cgi', 'GoPreset', array('cameraId' => $cameraId, 'presetId' => $presetId), $version);
     }
 
     public function getRecordings($cameraId, $limit)
