@@ -101,7 +101,15 @@ EOT;
         );
 
         $this->config['mqtt']->subscribe($topics, 0);
+
+        $time_start = time();
+        $timeout = 10;
         while ($this->config['mqtt']->proc()) {
+            if (time() - $time_start > $timeout) {
+                $this->text = 'Mqtt subscription reset by timeout';
+                $this->config['mqtt']->close();
+                break;
+            }
         }
 
         $keyboard = new Keyboard($this->config['keyboards']);
