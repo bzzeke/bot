@@ -14,6 +14,10 @@ class Email extends Controller
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
         $email = file_get_contents('php://input');
+        if (stripos($email, 'content-type') === false) {
+            $email = "Content-Type: text/plain\n" . $email;
+        }
+
         $message = Parser::email($email);
         $chat_ids = ChatStorage::get();
 
