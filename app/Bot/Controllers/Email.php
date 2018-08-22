@@ -19,6 +19,11 @@ class Email extends Controller
         }
 
         $message = Parser::email($email);
+
+        if ($this->skipNotification($message)) {
+            return 'skipped';
+        }
+
         $chat_ids = ChatStorage::get();
 
         $text = $message->textPlain();
@@ -84,4 +89,43 @@ class Email extends Controller
         return preg_replace('/\<br(\s*)?\/?\>/i', PHP_EOL, $text);
     }
 
+    protected function skipNotification($message)
+    {
+        $to = $message->getTo();
+        if ($to[0]->email == getenv('SURV_EMAIL') && $this->isHomeMode()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isHomeMode()
+    {
+        $is_home = false;
+        $mqtt = $this->app['mqtt'];
+        if (!$mqtt->connect()){
+            error_log('Failed to connecto to MQTT (email)');
+            return false;
+        }
+        $mqtt->subscribe([
+            '/devices/util/controls/Occupancy' => [
+                'qos' => 0,
+                'function' => function($topic, $message) use (&$is_home, $mqtt) {
+                    $is_home = $message;
+                    $mqtt->close();
+                }
+            ]
+        ], 0);
+
+        $time_start = time();
+        $timeout = 10;
+        while ($mqtt->proc()) {
+            if (time() - $time_start > $timeout) {
+                $mqtt->close();
+                break;
+            }
+        }
+
+        return $is_home;
+    }
 }
