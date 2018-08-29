@@ -48,11 +48,11 @@ class CallbackqueryCommand extends SystemCommand
         $query_data = $callback_query->getData();
 
         if (!empty($query_data)) {
-            $parsed_data = json_decode($query_data, true);
+            list($response_command, $response_state, $response_payload) = $this->telegram->unserialize($query_data);
             error_log($query_data);
-            if (!empty($parsed_data) && !empty($parsed_data['command'])) {
-                $conversation = new Conversation($callback_query->getFrom()->getId(), $callback_query->getMessage()->getChat()->getId(), $parsed_data['command']);
-                $conversation->setState($parsed_data['state']);
+            if (!empty($response_command)) {
+                $conversation = new Conversation($callback_query->getFrom()->getId(), $callback_query->getMessage()->getChat()->getId(), $response_command);
+                $conversation->setState($response_state);
                 $conversation->update();
 
                 $update = new Update([
@@ -69,8 +69,8 @@ class CallbackqueryCommand extends SystemCommand
                             'id' => $callback_query->getMessage()->getChat()->getId(),
                             'type' => 'private',
                         ],
-                        'text' => $parsed_data['payload'],
-                        'command' => $parsed_data['command'],
+                        'text' => $response_payload,
+                        'command' => $response_command,
                         'reply_to_message' => [
                             'message_id' => $callback_query->getMessage()->getMessageId()
                         ],

@@ -104,6 +104,15 @@ class CamsCommand extends UserCommand
                     $data['photo'] = Request::encodeFile($file);
                     $result = Request::sendPhoto($data);
                 }
+                break;
+
+            case 'get_video':
+
+                $file = $this->getVideo($text);
+                if (!empty($file)) {
+                    $data['video'] = Request::encodeFile($file);
+                    $result = Request::sendVideo($data);
+                }
         }
 
         return $result;
@@ -126,12 +135,36 @@ class CamsCommand extends UserCommand
         return $files;
     }
 
+    protected function getVideo($filename)
+    {
+        $sighthound = $this->config['sighthound'];
+
+        list($camera, $file_ts) = $sighthound->parseFilename($filename);
+
+        $clips = $sighthound->getClips($camera, $file_ts);
+
+        $clip = [];
+        foreach ($clips as $timestamp => $data) {
+            if ($timestamp < $file_ts) {
+                $clip = $data;
+                break;
+            }
+        }
+
+        if ($clip) {
+            $clip['id'] = rand(1, 999);
+            return $sighthound->downloadClip($clip);
+        }
+
+        return false;
+    }
+
     protected function generateCallback($payload)
     {
-        return json_encode([
-            'command' => $this->name,
-            'state' => $this->conversation->getState(),
-            'payload' => $payload,
-        ]);
+        return $this->telegram->serialize(
+            $this->name,
+            $this->conversation->getState(),
+            $payload
+        );
     }
 }

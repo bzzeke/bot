@@ -6,6 +6,7 @@ use bashkarev\email\Parser;
 use Bot\ChatStorage;
 
 use Longman\TelegramBot\Request;
+use Longman\TelegramBot\Entities\InlineKeyboard;
 
 class Email extends Controller
 {
@@ -37,12 +38,21 @@ class Email extends Controller
             foreach ($attachments as $attachment) {
                 $file = tempnam('/tmp/', 'att');
                 $attachment->save($file);
+                $reply_markup = null;
+
+                if ($this->isSurveillanceNotification($message)) {
+                    $reply_markup = new InlineKeyboard([[
+                        'text' => 'Get video',
+                        'callback_data' => $telegram->serialize('cams', 'get_video', $attachment->getFileName())
+                    ]]);
+                }
 
                 foreach ($chat_ids as $chat_id => $_data) {
                     $response = Request::sendPhoto([
                         'chat_id' => $chat_id,
                         'caption' => $text,
-                        'photo' => Request::encodeFile($file)
+                        'photo' => Request::encodeFile($file),
+                        'reply_markup' => $reply_markup
                     ]);
 
                     if (!$response->isOk()) {
@@ -91,8 +101,17 @@ class Email extends Controller
 
     protected function skipNotification($message)
     {
+        if ($this->isSurveillanceNotification($message) && $this->isHomeMode()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isSurveillanceNotification($message)
+    {
         $to = $message->getTo();
-        if ($to[0]->email == getenv('SURV_EMAIL') && $this->isHomeMode()) {
+        if ($to[0]->email == getenv('SURV_EMAIL')) {
             return true;
         }
 

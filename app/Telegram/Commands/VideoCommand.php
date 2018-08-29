@@ -138,10 +138,10 @@ class VideoCommand extends UserCommand
 
     protected function generateCallback($payload)
     {
-        return json_encode([
-            'command' => $this->name,
-            'state' => $this->conversation->getState(),
-            'payload' => $payload,
-        ]);
+        return $this->telegram->serialize(
+            $this->name,
+            $this->conversation->getState(),
+            $payload
+        );
     }
 }
