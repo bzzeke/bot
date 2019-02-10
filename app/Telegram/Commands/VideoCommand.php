@@ -12,7 +12,6 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
-use Bot\ChatStorage;
 use Bot\Conversation;
 
 /**

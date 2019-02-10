@@ -3,7 +3,6 @@
 namespace Bot\Controllers;
 
 use bashkarev\email\Parser;
-use Bot\ChatStorage;
 
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -25,7 +24,7 @@ class Email extends Controller
             return 'skipped';
         }
 
-        $chat_ids = ChatStorage::get();
+        $chat_ids = $this->app['storage']->get('Chats');
 
         $text = $message->textPlain();
         if (empty($text)) {
@@ -82,7 +81,7 @@ class Email extends Controller
         $filename = './var/failed_email_' . $date->getTimestamp();
         file_put_contents($filename, $contents);
 
-        $chat_ids = ChatStorage::get();
+        $chat_ids = $this->app['storage']->get('Chats');
         $message = sprintf("Failed to deliver email.\n%s\nemail stored at %s", $response->printError(true), $filename);
 
         error_log($message);

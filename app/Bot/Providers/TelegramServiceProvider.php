@@ -45,7 +45,8 @@ class TelegramServiceProvider implements ServiceProviderInterface
               'keyboards' => [],
               'synology' => $app['synology'],
               'mqtt' => $app['mqtt'],
-              'sighthound' => $app['sighthound']
+              'sighthound' => $app['sighthound'],
+              'storage' => $app['storage']
             ];
 
             foreach ($app['telegram.commands'] as $command) {
