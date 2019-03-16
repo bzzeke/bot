@@ -7,16 +7,16 @@ class Text
     protected $data = [];
 
     protected $formatted_msg = <<<EOT
-Первый этаж: насос [floor1_pump], температура [floor1_temp]˚C, нагрев до [floor1]˚C.
-Второй этаж: насос [floor2_pump], температура [floor2_temp]˚C, нагрев до [floor2]˚C.
-Подвал: насос [basement_pump], температура [basement_temp]˚C, нагрев до [basement]˚C.
-Котел: [boiler_relay], температура [boiler_temp]˚C.
+Первый этаж: насос [floor1_pump], температура [floor1_temp], нагрев до [floor1].
+Второй этаж: насос [floor2_pump], температура [floor2_temp], нагрев до [floor2].
+Подвал: насос [basement_pump], температура [basement_temp], нагрев до [basement].
+Котел: [boiler_relay], температура [boiler_temp].
 Простой режим - [simple], режим котла [enabled].
 Давление в котле - [pressure] бар.
 Время работы котла - [work_time].
-Чердак -[garret_temp]˚C.
-Улица - [outside_temp]˚C.
-Баня - [bathhouse_temp]˚C.
+Чердак - [garret_temp].
+Улица - [outside_temp].
+Баня - [bathhouse_temp].
 Водонагреватель - [water_heater].
 Давление воды - [water_pressure] бар.
 EOT;
@@ -29,7 +29,17 @@ EOT;
         'simple' => 'bool',
         'enabled' => 'bool',
         'water_heater' => 'bool',
-        'work_time' => 'hours'
+        'work_time' => 'hours',
+        'floor1_temp' => 'int',
+        'floor1' => 'int',
+        'floor2_temp' => 'int',
+        'floor2' => 'int',
+        'basement_temp' => 'int',
+        'basement' => 'int',
+        'boiler_temp' => 'int',
+        'garret_temp' => 'int',
+        'outside_temp' => 'int',
+        'bathhouse_temp' => 'int',
     ];
 
     public function __construct($data)
@@ -48,6 +58,10 @@ EOT;
 
                     case 'hours':
                         $this->data[$name] = (int)$value > 0 ? sprintf('%.1f часов', $value / 60 / 60) : 'нет данных';
+                    break;
+
+                    case 'int':
+                        $this->data[$name] = (int)$value;
                     break;
                 }
             }

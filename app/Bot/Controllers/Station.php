@@ -29,8 +29,8 @@ class Station extends Controller
             if (strtolower($json['request']['original_utterance']) == getenv('STATION_PASSWORD')) {
                 $this->app['storage']->set('Station', $json['session']['user_id'], true);
             } elseif ($json['session']['new']) {
-                $response['response']['text'] = 'Нужна авторизация, бро. Назови пароль.';
-                $response['response']['tts'] = 'Нужна авторизация, бро. Назови пароль.';
+                $response['response']['text'] = 'Привет, это закрытый навык. Нужна авторизация, бро. Назови пароль.';
+                $response['response']['tts'] = 'Привет, это закрытый навык. Нужна авторизация, бро. Назови пароль.';
                 return json_encode($response);
             } else {
                 $response['response']['text'] = 'Не, не угадал пароль';
