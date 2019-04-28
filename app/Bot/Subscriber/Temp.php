@@ -19,10 +19,10 @@ class Temp
         '/devices/thermostat/controls/Work time' => 'work_time',
         '/devices/thermostat/controls/Pressure' => 'pressure',
         '/devices/thermostat/controls/Enabled' => 'enabled',
-        '/devices/wb-gpio/controls/MOD1_OUT1' => 'boiler_relay',
-        '/devices/wb-mr14_32/controls/K1' => 'floor2_pump',
-        '/devices/wb-mr14_32/controls/K2' => 'floor1_pump',
-        '/devices/wb-mr14_32/controls/K3' => 'basement_pump',
+        '/devices/relays/controls/K8' => 'boiler_relay',
+        '/devices/relays/controls/K1' => 'floor1_pump',
+        '/devices/relays/controls/K2' => 'floor2_pump',
+        '/devices/relays/controls/K3' => 'basement_pump',
         '/devices/water_supply/controls/Heater' => 'water_heater',
         '/devices/water_supply/controls/Pressure' => 'water_pressure',
     );
@@ -48,11 +48,7 @@ class Temp
                 'qos' => 0,
                 'function' => array($this, 'processmsg')
             ),
-            '/devices/wb-mr14_32/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/wb-gpio/#' => array(
+            '/devices/relays/#' => array(
                 'qos' => 0,
                 'function' => array($this, 'processmsg')
             ),
