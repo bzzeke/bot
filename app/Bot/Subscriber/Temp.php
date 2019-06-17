@@ -44,38 +44,10 @@ class Temp
         }
 
         $topics = array(
-            '/devices/thermostat/#' => array(
+            '/devices/+/controls/+' => array(
                 'qos' => 0,
                 'function' => array($this, 'processmsg')
-            ),
-            '/devices/relays/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/water_supply/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/wb-w1/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/sensor_0/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/sensor_1/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/sensor_2/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
-            '/devices/boiler/#' => array(
-                'qos' => 0,
-                'function' => array($this, 'processmsg')
-            ),
+            )
         );
 
         $this->processed_topics = array_fill_keys(array_keys($this->topics), null);
