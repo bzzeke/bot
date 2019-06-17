@@ -8,13 +8,13 @@ class Temp
         '/devices/thermostat/controls/Floor_1' => 'floor1',
         '/devices/thermostat/controls/Floor_2' => 'floor2',
         '/devices/thermostat/controls/Basement' => 'basement',
-        '/devices/thermostat/controls/Floor 1 Temperature' => 'floor1_temp',
-        '/devices/thermostat/controls/Floor 2 Temperature' => 'floor2_temp',
-        '/devices/thermostat/controls/Basement Temperature' => 'basement_temp',
-        '/devices/thermostat/controls/Garret Temperature' => 'garret_temp',
-        '/devices/thermostat/controls/Outside Temperature' => 'outside_temp',
-        '/devices/thermostat/controls/Boiler Out Temperature' => 'boiler_temp',
-        '/devices/thermostat/controls/Bath House Temperature' => 'bathhouse_temp',
+        '/devices/sensor_1/controls/Temperature' => 'floor1_temp',
+        '/devices/sensor_2/controls/Temperature' => 'floor2_temp',
+        '/devices/sensor_0/controls/Temperature' => 'basement_temp',
+        '/devices/wb-w1/controls/28-001416f342ff' => 'garret_temp',
+        '/devices/wb-w1/controls/28-001417357bff' => 'outside_temp',
+        '/devices/wb-w1/controls/28-0014175dd1ff' => 'bathhouse_temp',
+        '/devices/boiler/controls/Current Temperature' => 'boiler_temp',
         '/devices/thermostat/controls/Simple' => 'simple',
         '/devices/thermostat/controls/Work time' => 'work_time',
         '/devices/thermostat/controls/Pressure' => 'pressure',
@@ -53,6 +53,26 @@ class Temp
                 'function' => array($this, 'processmsg')
             ),
             '/devices/water_supply/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
+            '/devices/wb-w1/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
+            '/devices/sensor_0/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
+            '/devices/sensor_1/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
+            '/devices/sensor_2/#' => array(
+                'qos' => 0,
+                'function' => array($this, 'processmsg')
+            ),
+            '/devices/boiler/#' => array(
                 'qos' => 0,
                 'function' => array($this, 'processmsg')
             ),
