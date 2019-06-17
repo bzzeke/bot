@@ -18,7 +18,7 @@ use Bot\Conversation;
 /**
  * User "/forcereply" command
  */
-class SetCommand extends UserCommand
+class CryCommand extends UserCommand
 {
     /**#@+
      * {@inheritdoc}
@@ -115,7 +115,7 @@ class SetCommand extends UserCommand
         return $result;
     }
 
-    protected function publishTopic($topic, $payload)
+    protected function publishTopic($payload)
     {
         if(!$this->config['mqtt']->connect()){
             error_log('Failed to connecto to MQTT (set)');
