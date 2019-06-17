@@ -36,7 +36,8 @@ class TelegramServiceProvider implements ServiceProviderInterface
                 'temp',
                 'cams',
                 'set',
-                'video'
+                'video',
+                'cry'
             ];
         };
 
