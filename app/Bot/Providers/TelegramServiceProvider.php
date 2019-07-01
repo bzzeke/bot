@@ -36,7 +36,6 @@ class TelegramServiceProvider implements ServiceProviderInterface
                 'temp',
                 'cams',
                 'set',
-                'video',
                 'cry'
             ];
         };
@@ -44,7 +43,6 @@ class TelegramServiceProvider implements ServiceProviderInterface
         $app['telegram.config'] = function ($app) {
             $config = [
               'keyboards' => [],
-              'synology' => $app['synology'],
               'mqtt' => $app['mqtt'],
               'sighthound' => $app['sighthound'],
               'storage' => $app['storage']

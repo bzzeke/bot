@@ -4,7 +4,7 @@ ENV vars:
 - `HOOK_URL` telegram bot hook (https://host/hook/process)
 - `MQTT_HOST` MQTT host
 
-- `SYNOLOGY_HOST` - synology host
-- `SYNOLOGY_USER` - synology username
-- `SYNOLOGY_PASSWORD` - synology password
+- `CAMERA_SERVER` - camera server
+- `CAM_NAME_0` - first camera
+- `CAM_NAME_N` - N camera
 - `DEBUG` enable debug (1)

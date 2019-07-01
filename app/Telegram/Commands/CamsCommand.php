@@ -27,15 +27,8 @@ class CamsCommand extends UserCommand
     protected $usage = '/cams';
     protected $version = '0.2.0';
 
-    const CAM_STREET = 1;
-    const CAM_STREET_PRESET_HOME = 512;
-    const CAM_STREET_PRESET_2 = 513;
-    const CAM_STREET_PRESET_3 = 514;
-
-    const CAM_BACKYARD = 2;
-    const CAM_BACKYARD_PRESET_HOME = 767;
-    const CAM_BACKYARD_PRESET_2 = 768;
-    const CAM_BACKYARD_PRESET_3 = 769;
+    protected $cameras = [];
+    const ALL_CAMERAS = 'all';
 
     /**#@-*/
     /**
@@ -43,6 +36,8 @@ class CamsCommand extends UserCommand
      */
     public function execute()
     {
+        $this->getCams();
+
         $message = $this->getMessage();
 
         $chat = $message->getChat();
@@ -65,20 +60,19 @@ class CamsCommand extends UserCommand
                 $this->conversation->update();
 
                 $data['text'] = 'Select camera:';
-                $data['reply_markup'] = new InlineKeyboard(
+
+                $keyboard = new InlineKeyboard(
                     [
-                        ['text' => 'All', 'callback_data' => $this->generateCallback('0')],
-                    ], [
-                        ['text' => 'Street: home', 'callback_data' => $this->generateCallback(static::CAM_STREET .':' . static::CAM_STREET_PRESET_HOME)],
-                        ['text' => 'Street: 2', 'callback_data' => $this->generateCallback(static::CAM_STREET .':' . static::CAM_STREET_PRESET_2)],
-                        ['text' => 'Street: 3', 'callback_data' => $this->generateCallback(static::CAM_STREET .':' . static::CAM_STREET_PRESET_3)],
-                    ], [
-                        ['text' => 'Backyard: home', 'callback_data' => $this->generateCallback(static::CAM_BACKYARD .':' . static::CAM_BACKYARD_PRESET_HOME)],
-                        ['text' => 'Backyard: 2', 'callback_data' => $this->generateCallback(static::CAM_BACKYARD .':' . static::CAM_BACKYARD_PRESET_2)],
-                        ['text' => 'Backyard: 3', 'callback_data' => $this->generateCallback(static::CAM_BACKYARD .':' . static::CAM_BACKYARD_PRESET_3)],
+                        ['text' => 'All', 'callback_data' => $this->generateCallback('all')],
                     ]
                 );
+                foreach ($this->cameras as $cam => $_data) {
+                    $keyboard->addRow(
+                        ['text' => $cam, 'callback_data' => $this->generateCallback($cam)]
+                    );
+                }
 
+                $data['reply_markup'] = $keyboard;
                 $result = Request::sendMessage($data);
                 break;
 
@@ -92,11 +86,12 @@ class CamsCommand extends UserCommand
                 $this->conversation->stop();
 
                 $payload = $text;
-                if ($payload === '0') {
-                    $files = $this->getSnapshots([static::CAM_STREET, static::CAM_BACKYARD]);
+
+                if (strpos($payload, ':') === false) {
+                    $files = $this->getSnapshots($payload);
                 } else {
                     list($cam_id, $preset_id) = explode(':', $payload);
-                    $files = $this->getSnapshots([$cam_id], $preset_id);
+                    $files = $this->getSnapshots($cam_id, $preset_id);
                 }
 
                 foreach ($files as $file) {
@@ -117,18 +112,33 @@ class CamsCommand extends UserCommand
         return $result;
     }
 
-    protected function getSnapshots($cam_ids, $preset_id = 0)
+    protected function getCams()
+    {
+        $it = 0;
+        while (!empty($_ENV["CAM_NAME_$it"])) {
+            $this->cameras[$_ENV["CAM_NAME_$it"]] = [];
+            $it++;
+        }
+    }
+
+    protected function getSnapshot($cam_id)
+    {
+        return file_get_contents(sprintf("http://%s/snapshot/%s", $_ENV['CAMERA_SERVER'], $cam_id));
+    }
+
+    protected function getSnapshots($cam_id, $preset_id = 0)
     {
         $files = [];
-        $synology = $this->config['synology'];
+
+        if ($cam_id == static::ALL_CAMERAS) {
+            $cam_ids = array_keys($this->cameras);
+        } else {
+            $cam_ids = [$cam_id];
+        }
 
         foreach ($cam_ids as $cam_id) {
-            if (!empty($preset_id)) {
-                $synology->setPosition($cam_id, $preset_id);
-                sleep(10);
-            }
             $files[$cam_id] = tempnam('/tmp', 'cam_' . $cam_id);
-            file_put_contents($files[$cam_id], $synology->getSnapshot($cam_id));
+            file_put_contents($files[$cam_id], $this->getSnapshot($cam_id));
         }
 
         return $files;

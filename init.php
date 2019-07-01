@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Bot\Providers\BootServiceProvider;
 use Bot\Providers\StorageServiceProvider;
-use Bot\Providers\SynologyServiceProvider;
 use Bot\Providers\SighthoundServiceProvider;
 use Bot\Providers\MqttServiceProvider;
 use Bot\Providers\TelegramServiceProvider;
@@ -20,7 +19,6 @@ $app = new Application();
 
 $app->register(new BootServiceProvider);
 $app->register(new StorageServiceProvider);
-$app->register(new SynologyServiceProvider);
 $app->register(new SighthoundServiceProvider);
 $app->register(new MqttServiceProvider);
 $app->register(new TelegramServiceProvider);
