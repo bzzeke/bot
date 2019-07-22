@@ -11,7 +11,7 @@ class Station extends Controller
 
     public function process()
     {
-        $data = file_get_contents('php://input');
+        $data = $this->request->getContent();
 
         if (empty($data) || ($json = json_decode($data, true)) === false) {
             return '';

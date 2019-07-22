@@ -13,13 +13,12 @@ class Email extends Controller
     {
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
-        $email = file_get_contents('php://input');
+        $email = $this->request->getContent();
         if (stripos($email, 'content-type') === false) {
             $email = "Content-Type: text/plain\n" . $email;
         }
 
         $message = Parser::email($email);
-
         if ($this->skipNotification($message)) {
             return 'skipped';
         }
@@ -72,7 +71,7 @@ class Email extends Controller
             }
         }
 
-        return 'ok';
+        return "Email pushed successfully\n";
     }
 
     protected function saveFailedEmail($response, $message, $contents)

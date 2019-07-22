@@ -11,7 +11,7 @@ class Notify extends Controller
     {
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
-        $data = file_get_contents('php://input');
+        $data = $this->request->getContent();
 
         if (!empty($data) && $json = json_decode($data, true)) {
 
@@ -38,7 +38,7 @@ class Notify extends Controller
     {
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
-        $data = file_get_contents('php://input');
+        $data = $this->request->getContent();
 
         if (!empty($data) && $json = json_decode($data, true)) {
             /*

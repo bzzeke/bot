@@ -6,6 +6,7 @@
         "longman/telegram-bot": "^0.52",
         "vlucas/phpdotenv": "^2.4",
         "silex/silex": "^2.0",
-        "bashkarev/email": "^1.0"
+        "bashkarev/email": "^1.0",
+        "thefox/smtpd": "^0.7.0"
     }
 }
