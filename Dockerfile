@@ -6,7 +6,7 @@ VOLUME ["/app", "/etc/ssl/acme", "/etc/acme"]
 USER root
 
 RUN apk update
-RUN apk add --no-cache nginx supervisor rsyslog
+RUN apk add --no-cache nginx supervisor
 RUN openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096
 RUN docker-php-ext-install -j$(nproc) sockets
 RUN mkdir -p /run/nginx
