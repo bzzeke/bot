@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find /tmp/* -mtime +2 -exec rm {} \;

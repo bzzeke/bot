@@ -6,13 +6,20 @@ use TheFox\Smtp\Server;
 use TheFox\Smtp\Event;
 use Zend\Mail\Message;
 use Symfony\Component\HttpFoundation\Request;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 $app = include(__DIR__ . '/init.php');
 $app->boot();
 
+$logger = new Logger('smtp_example');
+$logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
+
 $options = [
     'ip' => getenv('SMTP_HOST'),
-    'port' => getenv('SMTP_PORT')
+    'port' => getenv('SMTP_PORT'),
+    'logger' => $logger
 ];
 
 $server = new Server($options);
