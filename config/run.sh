@@ -8,5 +8,6 @@ sed -i "s/xx_log_server_xx/${LOG_SERVER}/g" /etc/rsyslog.conf
 
 cd /app
 composer update
+chmod -R 777 var
 
 exec supervisord -c /etc/supervisord.conf

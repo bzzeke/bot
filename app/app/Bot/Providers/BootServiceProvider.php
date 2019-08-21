@@ -21,7 +21,9 @@ class BootServiceProvider implements ServiceProviderInterface, BootableProviderI
 
     public function boot(Application $app)
     {
-        $app['dotenv']->load();
+        if (file_exists(APP_DIR . '/.env')) {
+            $app['dotenv']->load();
+        }
 
         error_reporting(E_ALL);
 
