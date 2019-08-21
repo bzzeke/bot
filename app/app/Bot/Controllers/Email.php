@@ -20,7 +20,7 @@ class Email extends Controller
 
         $message = Parser::email($email);
         if ($this->skipNotification($message)) {
-            return 'skipped';
+            return "skipped\n";
         }
 
         $chat_ids = $this->app['storage']->get('Chats');

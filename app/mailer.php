@@ -13,7 +13,7 @@ $app = include(__DIR__ . '/init.php');
 $app->boot();
 
 $logger = new Logger('smtp_example');
-$logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler('php://stdout', getenv('MAILER_DEBUG') ? Logger::DEBUG : Logger::NOTICE));
 
 
 $options = [
