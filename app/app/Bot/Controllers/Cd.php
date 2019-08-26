@@ -19,18 +19,20 @@ class Cd extends Controller
     protected function runBuild($cd_server)
     {
         $payload = $this->request->getContent();
-
+        $response = [
+            "message" => "Empty request"
+        ];
         if (!empty($payload) && $decoded = json_decode($payload)) {
             try {
                 $client = new Client();
-                $client->post($cd_server, [
+                $response = $client->post($cd_server, [
                     'json' => $decoded
                 ]);
             } catch (\Exception $e) {
-                return $e->getMessage();
+                $response["message"] = $e->getMessage();
             }
         }
 
-        return "OK";
+        return $response;
     }
 }
