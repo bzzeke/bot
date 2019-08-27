@@ -13,7 +13,7 @@ class TelegramServiceProvider implements ServiceProviderInterface
     {
         $app['telegram'] = function ($app) {
 
-            $telegram = new Telegram(getenv('API_KEY'), getenv('BOT_NAME'));
+            $telegram = new Telegram(getenv('BOT_TOKEN'), getenv('BOT_NAME'));
             $telegram->addCommandsPath(APP_DIR . '/app/Telegram/Commands', true);
 
             foreach ($app['telegram.commands'] as $command) {
@@ -22,7 +22,7 @@ class TelegramServiceProvider implements ServiceProviderInterface
 
             $admins_list = array_map(function($value) {
                 return (int) $value;
-            }, explode(',', getenv('TELEGRAM_ADMINS_LIST')));
+            }, explode(',', getenv('BOT_ADMINS_LIST')));
 
             if (!empty($admins_list)) {
                 $telegram->enableAdmins($admins_list);

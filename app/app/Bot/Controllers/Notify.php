@@ -44,7 +44,8 @@ class Notify extends Controller
             /*
             data structure:
             {
-                text: 'message'
+                text: 'message',
+                parse_mode: 'Markdown',
                 attachments: [
                     file1_base64,
                     file2_base64
@@ -56,7 +57,8 @@ class Notify extends Controller
             foreach ($chat_ids as $chat_id => $_data) {
                 $response = Request::sendMessage([
                     'chat_id' => $chat_id,
-                    'text' => $json['text']
+                    'text' => $json['text'],
+                    'parse_mode' => $json['parse_mode'] ?? ''
                 ]);
 
                 if ($response->isOk()) {

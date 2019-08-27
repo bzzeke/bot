@@ -10,7 +10,7 @@ class Hook extends Controller
     public function register()
     {
         try {
-            $result = $this->app['telegram']->setWebhook(getenv('HOOK_URL'));
+            $result = $this->app['telegram']->setWebhook(getenv('BOT_HOOK_URL'));
             if ($result->isOk()) {
                 return $result->getDescription();
             }
