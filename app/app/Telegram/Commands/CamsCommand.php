@@ -114,10 +114,11 @@ class CamsCommand extends UserCommand
 
     protected function getCams()
     {
-        $it = 0;
-        while (!empty($_ENV["CAM_NAME_$it"])) {
-            $this->cameras[$_ENV["CAM_NAME_$it"]] = [];
-            $it++;
+        $response = file_get_contents(sprintf("http://%s/camera_list", $_ENV['CAMERA_SERVER']));
+        if (!empty($response) && $data = json_decode($response, true)) {
+            foreach ($data as $camera) {
+                $this->cameras[$camera['name']] = [];
+            }
         }
     }
 
