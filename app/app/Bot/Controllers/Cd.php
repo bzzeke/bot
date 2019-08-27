@@ -34,6 +34,6 @@ class Cd extends Controller
             }
         }
 
-        return $response;
+        return json_encode($response);
     }
 }
