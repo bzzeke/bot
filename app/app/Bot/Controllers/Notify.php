@@ -12,6 +12,7 @@ class Notify extends Controller
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
         $data = $this->request->getContent();
+        $result = '';
 
         if (!empty($data) && $json = json_decode($data, true)) {
 
@@ -26,12 +27,12 @@ class Notify extends Controller
                 ]);
 
                 if ($response->isOk()) {
-                    return 'ok';
+                    $result = 'ok';
                 }
             }
         }
 
-        return '';
+        return json_encode($result);
     }
 
     public function general()
@@ -39,6 +40,7 @@ class Notify extends Controller
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
 
         $data = $this->request->getContent();
+        $result = '';
 
         if (!empty($data) && $json = json_decode($data, true)) {
             /*
@@ -72,12 +74,12 @@ class Notify extends Controller
                             ]);
                         }
                     }
-                    return 'ok';
+                    $result = 'ok';
                 }
             }
         }
 
-        return '';
+        return json_encode($result);
     }
 
     protected function getGrafanaMessage($json)
