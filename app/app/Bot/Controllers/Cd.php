@@ -20,16 +20,17 @@ class Cd extends Controller
     {
         $payload = $this->request->getContent();
         $response = [
-            "message" => "Empty request"
+            "error" => "Empty request"
         ];
         if (!empty($payload) && $decoded = json_decode($payload)) {
             try {
                 $client = new Client();
-                $response = $client->post($cd_server, [
+                $cd_response = $client->post($cd_server, [
                     'json' => $decoded
                 ]);
+                $response = json_decode($cd_response->getBody(), true);
             } catch (\Exception $e) {
-                $response["message"] = $e->getMessage();
+                $response["error"] = $e->getMessage();
             }
         }
 
