@@ -7,6 +7,8 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 
 class Notify extends Controller
 {
+    const MAX_MESSAGE_LENGTH = 4096;
+
     public function grafana()
     {
         $telegram = $this->app['telegram']; // instatiate class to correctly initialize static methods in Request class
@@ -56,12 +58,26 @@ class Notify extends Controller
             */
             $chat_ids = $this->app['storage']->get('Chats');
 
+            $file = '';
+            if (strlen($json['text']) > self::MAX_MESSAGE_LENGTH) {
+                $file = tempnam('/tmp/', 'doc');
+                file_put_contents($file, $json['text']);
+            }
+
             foreach ($chat_ids as $chat_id => $_data) {
-                $response = Request::sendMessage([
-                    'chat_id' => $chat_id,
-                    'text' => $json['text'],
-                    'parse_mode' => $json['parse_mode'] ?? ''
-                ]);
+                if (!empty($file)) {
+                    $response = Request::sendDocument([
+                        'chat_id' => $chat_id,
+                        'document' => Request::encodeFile($file),
+                        'parse_mode' => $json['parse_mode'] ?? ''
+                    ]);
+                } else {
+                    $response = Request::sendMessage([
+                        'chat_id' => $chat_id,
+                        'text' => $json['text'],
+                        'parse_mode' => $json['parse_mode'] ?? ''
+                    ]);
+                }
 
                 if ($response->isOk()) {
                     if (!empty($json['attachments'])) {
