@@ -34,14 +34,19 @@ class TempCommand extends UserCommand
      */
     public function execute()
     {
-        $subscriber = new Temp($this->config['mqtt']);
-        $result = $subscriber->run();
+        $response = file_get_contents(getenv("MQTT_DASH"));
+        if (!empty($response) && $widgets = json_decode($response, true)) {
+            $subscriber = new Temp($this->config['mqtt'], $widgets);
+            $result = $subscriber->run();
 
-        if ($result == false) {
-            $text = 'Mqtt subscription reset by timeout';
+            if ($result == false) {
+                $text = 'Mqtt subscription reset by timeout';
+            } else {
+                $renderer = new Markdown($result, $widgets);
+                $text = $renderer->render();
+            }
         } else {
-            $renderer = new Markdown($result);
-            $text = $renderer->render();
+            $text = 'Failed to get widget';
         }
 
         $keyboard = new Keyboard($this->config['keyboards']);

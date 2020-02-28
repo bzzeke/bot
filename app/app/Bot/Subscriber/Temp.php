@@ -29,17 +29,19 @@ class Temp
     protected $processed_topics = [];
 
     protected $mqtt;
+    protected $widgets;
 
-    public function __construct($mqtt)
+    public function __construct($mqtt, $widgets)
     {
         $this->mqtt = $mqtt;
+        $this->widgets = $widgets;
     }
 
 
     public function run()
     {
         if(!$this->mqtt->connect()){
-            error_log('Failed to connecto to MQTT (temp)');
+            error_log('Failed to connect to MQTT (temp)');
             return false;
         }
 
@@ -50,7 +52,7 @@ class Temp
             )
         );
 
-        $this->processed_topics = array_fill_keys(array_keys($this->topics), null);
+        $this->generateControls();
         $this->mqtt->subscribe($topics, 0);
 
         $time_start = time();
@@ -62,12 +64,13 @@ class Temp
             }
         }
 
-        return array_combine(array_values($this->topics), $this->processed_topics);
+        return $this->processed_topics;
     }
 
     public function processmsg($topic, $msg)
     {
         if (array_key_exists($topic, $this->processed_topics)) {
+            error_log("processed $topic"); // FIXME: mqtt hangs without pushing to log WTF!
             $this->processed_topics[$topic] = $msg;
         }
 
@@ -78,5 +81,14 @@ class Temp
         }
 
         $this->mqtt->close();
+    }
+
+    public function generateControls()
+    {
+        foreach ($this->widgets as $widget) {
+            foreach ($widget['controls'] as $control) {
+                $this->processed_topics[$control["statusTopic"]] = null;
+            }
+        }
     }
 }
