@@ -116,8 +116,10 @@ class CamsCommand extends UserCommand
     {
         $response = file_get_contents(sprintf("http://%s/camera_list", $_ENV['CAMERA_SERVER']));
         if (!empty($response) && $data = json_decode($response, true)) {
-            foreach ($data as $camera) {
-                $this->cameras[$camera['name']] = [];
+            if (!empty($data['results'])) {
+                foreach ($data['results'] as $camera) {
+                    $this->cameras[$camera['name']] = [];
+                }
             }
         }
     }

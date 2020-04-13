@@ -56,10 +56,16 @@ class Temp
         $this->mqtt->subscribe($topics, 0);
 
         $time_start = time();
-        $timeout = 10;
+        $timeout = 20;
         while ($this->mqtt->proc()) {
             if (time() - $time_start > $timeout) {
                 $this->mqtt->close();
+                foreach ($this->processed_topics as $k => $v) {
+                    if ($v === null) {
+                        error_log(sprintf("missed: %s", $k));
+                    }
+                }
+
                 return false;
             }
         }
@@ -70,7 +76,6 @@ class Temp
     public function processmsg($topic, $msg)
     {
         if (array_key_exists($topic, $this->processed_topics)) {
-            error_log("processed $topic"); // FIXME: mqtt hangs without pushing to log WTF!
             $this->processed_topics[$topic] = $msg;
         }
 
