@@ -44,7 +44,6 @@ class TelegramServiceProvider implements ServiceProviderInterface
             $config = [
               'keyboards' => [],
               'mqtt' => $app['mqtt'],
-              'sighthound' => $app['sighthound'],
               'storage' => $app['storage']
             ];
 

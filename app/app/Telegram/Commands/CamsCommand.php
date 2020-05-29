@@ -149,26 +149,11 @@ class CamsCommand extends UserCommand
 
     protected function getVideo($filename)
     {
-        $sighthound = $this->config['sighthound'];
+        list($camera, $timestamp) = explode('_', basename($filename, ".jpeg"));
+        $video_file = tempnam('/tmp', 'cam_' . $camera . $timestamp);
+        file_put_contents($video_file, file_get_contents(sprintf("http://%s/video/%s/%s", $_ENV['CAMERA_SERVER'], $camera, $timestamp)));
 
-        list($camera, $file_ts) = $sighthound->parseFilename($filename);
-
-        $clips = $sighthound->getClips($camera, $file_ts);
-
-        $clip = [];
-        foreach ($clips as $timestamp => $data) {
-            if ($timestamp < $file_ts) {
-                $clip = $data;
-                break;
-            }
-        }
-
-        if ($clip) {
-            $clip['id'] = rand(1, 999);
-            return $sighthound->downloadClip($clip);
-        }
-
-        return false;
+        return $video_file;
     }
 
     protected function generateCallback($payload)
